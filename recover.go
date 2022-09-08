@@ -1,11 +1,21 @@
 package recovers
 
 import (
+	"fmt"
 	"github.com/eininst/flog"
 	"runtime"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+var rlog flog.Interface
+
+func init() {
+	logf := "${level} %s[${pid}]%s ${time} ${msg}"
+	rlog = flog.New(flog.Config{
+		Format: fmt.Sprintf(logf, flog.Red, flog.Reset),
+	})
+}
 
 type ErrorHandler func(r interface{}) *fiber.Error
 
@@ -24,7 +34,7 @@ var DefaultConfig = Config{
 func stackTraceHandler(e interface{}, bufLen int) {
 	buf := make([]byte, bufLen)
 	buf = buf[:runtime.Stack(buf, false)]
-	flog.Errorf("panic: %v\n%s\n", e, buf)
+	rlog.Errorf("panic: %v\n%s\n", e, buf)
 }
 
 func New(config ...Config) fiber.Handler {
