@@ -26,6 +26,10 @@ type Config struct {
 var DefaultConfig = Config{
 	StackTraceBufLen: 1280,
 	Handler: func(r interface{}) *fiber.Error {
+		if v, ok := r.(error); ok {
+			return fiber.NewError(fiber.StatusInternalServerError, v.Error())
+		}
+
 		return fiber.NewError(fiber.StatusInternalServerError)
 	},
 }
@@ -52,7 +56,6 @@ func New(config ...Config) fiber.Handler {
 		defer func() {
 			if r := recover(); r != nil {
 				stackTraceHandler(r, cfg.StackTraceBufLen)
-
 				err = cfg.Handler(r)
 			}
 		}()
