@@ -33,8 +33,11 @@ func main() {
 }
 
 ```
+> http response: 500 (Internal Server Error)
 
 ```text
+Stack info: 
+
 [ERROR] [88182] 2022/09/08 14:45:31 panic: my is error
 goroutine 20 [running]:
 github.com/eininst/fiber-middleware-recover.stackTraceHandler({0x1028cf1e0?, 0x1400011b4b0}, 0x500)
