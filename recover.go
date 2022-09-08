@@ -16,7 +16,7 @@ func init() {
 	})
 }
 
-type ErrorHandler func(c *fiber.Ctx, r interface{}) *fiber.Error
+type ErrorHandler func(r interface{}) *fiber.Error
 
 type Config struct {
 	StackTraceBufLen int
@@ -25,7 +25,7 @@ type Config struct {
 
 var DefaultConfig = Config{
 	StackTraceBufLen: 1280,
-	Handler: func(c *fiber.Ctx, r interface{}) *fiber.Error {
+	Handler: func(r interface{}) *fiber.Error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	},
 }
@@ -53,7 +53,7 @@ func New(config ...Config) fiber.Handler {
 			if r := recover(); r != nil {
 				stackTraceHandler(r, cfg.StackTraceBufLen)
 
-				err = cfg.Handler(c, r)
+				err = cfg.Handler(r)
 			}
 		}()
 		return c.Next()
