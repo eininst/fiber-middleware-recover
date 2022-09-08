@@ -3,9 +3,8 @@ package recovers
 import (
 	"fmt"
 	"github.com/eininst/flog"
-	"runtime"
-
 	"github.com/gofiber/fiber/v2"
+	"runtime"
 )
 
 var rlog flog.Interface
