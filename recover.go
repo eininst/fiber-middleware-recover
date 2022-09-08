@@ -39,11 +39,10 @@ func stackTraceHandler(e interface{}, bufLen int) {
 
 func New(config ...Config) fiber.Handler {
 	var cfg = DefaultConfig
-	var errhandler ErrorHandler
 	if len(config) > 0 {
 		cfg = config[0]
 		if cfg.Handler == nil {
-			errhandler = DefaultConfig.Handler
+			cfg.Handler = DefaultConfig.Handler
 		}
 		if cfg.StackTraceBufLen == 0 {
 			cfg.StackTraceBufLen = DefaultConfig.StackTraceBufLen
@@ -54,12 +53,7 @@ func New(config ...Config) fiber.Handler {
 		defer func() {
 			if r := recover(); r != nil {
 				stackTraceHandler(r, cfg.StackTraceBufLen)
-
-				if errhandler != nil {
-					err = errhandler(r)
-				} else {
-					err = fiber.NewError(fiber.StatusInternalServerError)
-				}
+				err = cfg.Handler(r)
 			}
 		}()
 		return c.Next()
